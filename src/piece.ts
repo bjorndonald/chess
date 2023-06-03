@@ -1,5 +1,24 @@
 namespace Chess {
-    export enum chessPiece {
+    export const numberOfCells = 8
+
+    export type Position = {
+        x: number, y: number
+    }
+
+    export enum ColorType {
+        BLACK, WHITE
+    }
+
+    export enum Direction {
+        TOP, BOTTOM
+    }
+
+    export type Side = {
+        color: ColorType,
+        direction: Direction
+    }
+
+    export enum ChessPiece {
         WHITE_CHESS_KING = '&#9812;',
         WHITE_CHESS_QUEEN = '&#9813;',
         WHITE_CHESS_ROOK = '&#9814;',
@@ -14,22 +33,47 @@ namespace Chess {
         BLACK_CHESS_PAWN = '&#9823;'
     }
 
-    export enum ColorType {
-        WHITE, BLACK
+    export type Move = {
+        piece: Piece,
+        newPosition: Position,
+        canMove: boolean,
+        canKill?: Piece
     }
 
-    export class Piece {
-        id: string
-        name: string
-        key: chessPiece
-        color: ColorType
+    export abstract class Piece {
+        readonly key: string
+        readonly marker: ChessPiece
+        readonly id: number = new Date().getTime()
+        private position: Position
+        private alive: boolean = true
 
-        constructor(key: chessPiece) {
-            const index = Object.values(chessPiece).findIndex((val: string) => key === val)
-            this.name = Object.keys(chessPiece)[index]
-            this.key = key
-            this.id = "id" + Math.random().toString(16).slice(2)
-            this.color = index < 5 ? ColorType.WHITE : ColorType.BLACK
+        constructor(key: ChessPiece, readonly side: Side, defaultPosition: Position) {
+            this.marker = key
+            this.position = defaultPosition
+            const index = Object.values(ChessPiece).findIndex(val => val === key)
+            this.key = Object.keys(ChessPiece)[index]
+        }
+
+        getPosition(): Position {
+            return this.position
+        }
+
+        isAlive(): boolean {
+            return this.alive
+        }
+
+        move(selectedMove: Move): void {
+            this.position = selectedMove.newPosition
+            if (selectedMove.canKill)
+                selectedMove.canKill.kill()
+        }
+
+        getPossibleMoves(getPieceAtPositon: (pos: Position) => Piece | undefined, side: Side): Move[] {
+            return []
+        }
+
+        kill() {
+            this.alive = false
         }
     }
 }
