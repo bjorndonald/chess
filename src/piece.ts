@@ -1,6 +1,7 @@
-namespace Chess {
+export namespace Chess {
     export const numberOfCells = 8
-
+    export let sizeOfBoard: number = 1000
+    export const piecesAvailable: Piece[] = []
     export type Position = {
         x: number, y: number
     }
@@ -16,6 +17,11 @@ namespace Chess {
     export type Side = {
         color: ColorType,
         direction: Direction
+    }
+
+    export type PieceMap = {
+        id: number,
+        position: Position
     }
 
     export enum ChessPiece {
@@ -52,6 +58,29 @@ namespace Chess {
             this.position = defaultPosition
             const index = Object.values(ChessPiece).findIndex(val => val === key)
             this.key = Object.keys(ChessPiece)[index]
+            this.setup()
+        }
+
+        protected getPieceAtPositon(pos: Position): Piece | undefined {
+            return piecesAvailable.find((val) => val.getPosition().x === pos.x && val.getPosition().y === pos.y)
+        }
+
+        setup(): void {
+            const widthOfCells = (sizeOfBoard / numberOfCells)
+            const board = document.getElementById("chess-board")
+            const pieceDom = document.createElement("div")
+            pieceDom.id = this.id + ""
+            pieceDom.className = "piece"
+            pieceDom.style.width = widthOfCells + "px"
+            pieceDom.style.height = widthOfCells + "px"
+            pieceDom.style.top = this.position.y * widthOfCells + "px"
+            pieceDom.style.left = this.position.x * widthOfCells + "px"
+            pieceDom.setAttribute("data-key", this.key)
+            pieceDom.setAttribute("data-marker", this.marker)
+            board?.appendChild(pieceDom)
+            const span = document.createElement("span")
+            span.innerHTML = this.marker
+            pieceDom.appendChild(span)
         }
 
         getPosition(): Position {
@@ -64,11 +93,12 @@ namespace Chess {
 
         move(selectedMove: Move): void {
             this.position = selectedMove.newPosition
+
             if (selectedMove.canKill)
                 selectedMove.canKill.kill()
         }
 
-        getPossibleMoves(getPieceAtPositon: (pos: Position) => Piece | undefined, side: Side): Move[] {
+        getPossibleMoves(side: Side): Move[] {
             return []
         }
 

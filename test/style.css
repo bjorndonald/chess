@@ -1,11 +1,11 @@
-body{
+body {
     min-width: 100vw;
     min-height: 100vh;
     margin: 0;
     padding: 0;
 }
 
-#chess{
+#chess {
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -13,34 +13,59 @@ body{
     align-items: center;
 }
 
-#chess-board{
+#chess-board {
+    position: relative;
     margin: auto;
 }
 
-.box{
-    border: 1px solid #979797;
+.row {
+    display: grid;
+    border-top: 1px solid #979797;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.row:last-child {
+    border-bottom: 1px solid #979797;
+}
+
+.row .box {
+    background-color: #f2f2f2;
+}
+
+.row:nth-of-type(odd) .box:nth-child(odd) {
+    background-color: #c4c4c4;
+}
+
+.row:nth-of-type(even) .box:nth-child(even) {
+    background-color: #c4c4c4;
+}
+
+.box {
+    border-left: 1px solid #979797;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.row{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+.box:first-child {
+    border-right: none;
 }
 
-.row .box{
-    background-color: #f2f2f2;
+.box:last-child {
+    border-right: 1px solid #979797;
 }
 
-.row:nth-of-type(odd) .box:nth-child(odd){
-    background-color: #c4c4c4;
-}
-
-.row:nth-of-type(even) .box:nth-child(even){
-    background-color: #c4c4c4;
-}
-
-.box span{
+.box span {
     font-size: x-large;
+}
+
+.piece {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.piece span {
+    font-size: 48px;
 }
