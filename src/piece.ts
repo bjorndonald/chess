@@ -1,7 +1,7 @@
 export namespace Chess {
     export const numberOfCells = 8
     export let sizeOfBoard: number = 1000
-    export const piecesAvailable: Piece[] = []
+    export let piecesAvailable: Piece[] = []
     export type Position = {
         x: number, y: number
     }
@@ -83,6 +83,13 @@ export namespace Chess {
             pieceDom.appendChild(span)
         }
 
+        updateDOM(): void {
+            const widthOfCells = (sizeOfBoard / numberOfCells)
+            const pieceDom = document.getElementById(this.id + "")
+            pieceDom?.style.setProperty("top", this.getPosition().y * widthOfCells + "px")
+            pieceDom?.style.setProperty("left", this.getPosition().x * widthOfCells + "px")
+        }
+
         getPosition(): Position {
             return this.position
         }
@@ -93,12 +100,12 @@ export namespace Chess {
 
         move(selectedMove: Move): void {
             this.position = selectedMove.newPosition
-
+            this.updateDOM()
             if (selectedMove.canKill)
                 selectedMove.canKill.kill()
         }
 
-        getPossibleMoves(side: Side): Move[] {
+        getPossibleMoves(): Move[] {
             return []
         }
 

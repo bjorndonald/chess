@@ -60,7 +60,9 @@ export class Pawn extends Chess.Piece {
                 ...newPosition,
                 x
             }
+
             pieceAtPosition = this.getPieceAtPositon(newPosition)
+
             if (pieceAtPosition && this.side.color !== pieceAtPosition.side.color)
                 possibleMoves.push({
                     piece: this,

@@ -8,7 +8,8 @@ const html = fs.readFileSync(path.resolve(__dirname, './../test/index.html'), 'u
 jest.dontMock('fs');
 
 describe('Piece component', () => {
-    let side: Chess.Side, defaultPosition: Chess.Position, piece: Chess.Piece
+    let side: Chess.Side, defaultPosition: Chess.Position, piece: Chess.Piece, pieceDom: HTMLElement
+    const widthOfCells = (Chess.sizeOfBoard / Chess.numberOfCells)
     beforeAll(() => {
         side = {
             color: Chess.ColorType.WHITE,
@@ -19,7 +20,9 @@ describe('Piece component', () => {
         document.documentElement.innerHTML = html.toString();
         const board = new Board(1000, "chess")
         piece = new Pawn(side, defaultPosition)
+        pieceDom = document.getElementById(piece.id + "") as HTMLElement
     })
+
     afterEach(jest.resetModules);
 
 
@@ -30,8 +33,6 @@ describe('Piece component', () => {
     })
 
     it('Check if piece object is renders correctly', () => {
-        const pieceDom = document.getElementById(piece.id + "")
-
         const widthOfCells = (Chess.sizeOfBoard / Chess.numberOfCells)
         let width = pieceDom?.style.width
         let height = pieceDom?.style.height
@@ -42,9 +43,25 @@ describe('Piece component', () => {
 
         expect(width).toBe(widthOfCells + "px")
         expect(height).toBe(widthOfCells + "px")
-        expect(piece.getPosition().y * widthOfCells).toBe(0)
-        expect(piece.getPosition().x * widthOfCells).toBe(0)
+        expect(piece.getPosition().x + "px").toBe(left)
+        expect(piece.getPosition().y + "px").toBe(top)
         expect(key).toBe(piece.key)
         expect(marker).toBe('♙')
+    })
+
+    it('Check if piece object moves to correct position', () => {
+        let y = piece.getPosition().y + 1
+
+        piece.move({
+            piece,
+            newPosition: { x: piece.getPosition().x, y: piece.getPosition().y + 1 },
+            canMove: true
+        })
+
+        let top = pieceDom?.style.top
+        let left = pieceDom?.style.left
+
+        expect(piece.getPosition().x + "px").toBe(left)
+        expect(y * widthOfCells + "px").toBe(top)
     })
 })
